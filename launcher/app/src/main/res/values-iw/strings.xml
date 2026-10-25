@@ -145,4 +145,18 @@
     <string name="race_countdown_hours">%1$d שע׳ %2$d דק׳</string>
     <string name="race_countdown_days">%1$d ימ׳ %2$d שע׳</string>
     <string name="last_opened">פתיחה אחרונה: %1$s</string>
+
+    <string name="home_style_label">סגנון מסך הבית</string>
+    <string name="home_style_classic">קלאסי</string>
+    <string name="home_style_aurora">אורורה</string>
+    <string name="home_style_cinema">קולנוע</string>
+    <string name="home_style_orbit">מסלול</string>
+    <string name="ui_sounds_state">צלילי ממשק: %1$s</string>
+    <string name="style_opening">נפתח</string>
+    <string name="style_open">▶  פתיחה</string>
+    <string name="style_up_hint">↑  כניסות והגדרות</string>
+    <string name="style_ok_hint">OK לפתיחה</string>
+    <string name="style_ok_to_open">לחצו OK לפתיחה</string>
+    <string name="style_opened_just_now">נפתח הרגע</string>
+    <string name="style_opened">נפתח %1$s</string>
 </resources>

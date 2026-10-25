@@ -131,6 +131,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private boolean coocaaSources;
 
     private AppAdapter adapter;
+    /** home_style aurora, cinema or orbit, drawn over this activity; null for the classic layout. */
+    private StyleHome styleHome;
     private RecyclerView grid;
     private FrameLayout root;
     private WallpaperPlayer wallpaperPlayer;
@@ -820,8 +822,28 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     .removeCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)
                     .build(), vpnCallback);
         }
+        styleHome = StyleHome.create(this, styleHost());
+        if (styleHome != null) {
+            styleHome.attach(findViewById(android.R.id.content));
+            // Everything of the classic layout keeps running (tiles, pills, helpers) but nothing of it is drawn.
+            root.setVisibility(View.INVISIBLE);
+        }
         // Not after recreate(): the launch intent survives it and would open the settings again.
         if (savedInstanceState == null && !openLauncherSettingsIfAsked(getIntent())) openInputsIfAsked(getIntent());
+    }
+
+    /** What the home styles use of this activity: the loaded tiles, and the pills' own actions. */
+    private StyleHome.Host styleHost() {
+        return new StyleHome.Host() {
+            @Override public AppAdapter adapter() { return adapter; }
+            @Override public int dockSize() { return COLUMNS; }
+            @Override public void openInputs() { btnInputs.performClick(); }
+            @Override public void openNetwork() { btnWifi.performClick(); }
+            @Override public void openSettings() { open(new Intent(MainActivity.this, QuickSettingsActivity.class)); }
+            @Override public CharSequence networkLabel() { return btnWifi.getText(); }
+            @Override public CharSequence greeting() { return greeting.getText(); }
+            @Override public boolean animations() { return animations && !reducedMotion; }
+        };
     }
 
     /**
@@ -887,6 +909,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (openLauncherSettingsIfAsked(intent)) return;
         if (openInputsIfAsked(intent)) return;
         if (intent == null || !intent.hasCategory(Intent.CATEGORY_HOME)) return;
+        if (styleHome != null) styleHome.onHome();
         grid.scrollToPosition(0);
         lastFocused = 0;
         lastFocusedKey = adapter.getItemCount() > 0 ? adapter.keyAt(0) : null;
@@ -962,6 +985,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         sky.update();
         wallpaperPlayer.start();
         handler.postDelayed(minuteTick, MINUTE_MS);
+        if (styleHome != null) styleHome.onResume();
         if (festive && diya != null) {
             diya.start();
             LocalDate today = LocalDate.now();
@@ -1053,6 +1077,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (pos < 0) hideHero();
             // A newly installed app may have brought a card with it.
             tilesReady = true;
+            if (styleHome != null) styleHome.onAppsChanged();
             startPendingSettingsReorder();
             showCardPrompt();
         }
@@ -1107,6 +1132,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (returnToLibrary || libraryFocusPending) focusLibrary();
             else focusTile(pos >= 0 ? pos : returnSlot);
             tilesReady = true;
+            if (styleHome != null) styleHome.onAppsChanged();
             startPendingSettingsReorder();
             showCardPrompt();
         });
@@ -1127,6 +1153,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onPause() {
         super.onPause();
+        if (styleHome != null) styleHome.onPause();
         root.removeCallbacks(showIdleClock);
         endReorder();   // Home or another app while reordering keeps the order so far
         wallpaperPlayer.stop();
@@ -1166,6 +1193,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // process in the foreground; never blank the screen the owner is looking at.
         if (!MemoryTrimPolicy.shouldRelease(level, started)) return;
         adapter.clear();
+        if (styleHome != null) styleHome.release();
         // Detach the adapter too: with Home stopped no layout pass runs, so the tile views (and the bitmaps
         // they hold) would stay attached until Home comes back. setAdapter(null) recycles them now.
         grid.setAdapter(null);
@@ -1189,6 +1217,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (styleHome != null) styleHome.onDestroy();
         unregisterReceiver(packageReceiver);
         wallpaperPlayer.close();
         ConnectivityManager cm = getSystemService(ConnectivityManager.class);
@@ -1233,6 +1262,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (handleSettingsKey(event)) return true;
+        if (styleHome != null && styleHome.dispatchKey(event)) return true;
         if (tileMenuEnabled && !reordering && openPopup == null && cardPrompt == null
                 && event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
             int position = focusedTilePosition();

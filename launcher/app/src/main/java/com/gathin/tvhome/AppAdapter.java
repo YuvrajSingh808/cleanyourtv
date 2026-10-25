@@ -641,6 +641,26 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return e.banner != null ? e.banner : e.icon;
     }
 
+    /** For the home styles (StyleHome): an app or card tile, never an empty dock slot or the Default-home tile. */
+    boolean isLaunchableAt(int position) {
+        if (position < 0 || position >= items.size()) return false;
+        int kind = items.get(position).kind;
+        return kind == Entry.APP || kind == Entry.CARD;
+    }
+
+    Drawable bannerAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).banner : null;
+    }
+
+    Drawable iconAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).icon : null;
+    }
+
+    /** Opens the tile at this position exactly as a click on it would. */
+    void launchAt(int position) {
+        if (position >= 0 && position < items.size()) launch(items.get(position));
+    }
+
     float focusScale() {
         return !animations ? 1f : advancedEffects ? 1.12f : 1.10f;
     }

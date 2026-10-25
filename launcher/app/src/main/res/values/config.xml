@@ -436,4 +436,12 @@
          faint outer glow), rim (the crisp rim alone, no sheen, fill or glow, for a quiet focus over a wallpaper) or
          halo (the rim with a lighter outer glow). Can also be set with "glass_style": "rim" in a theme's config.json. -->
     <string name="glass_style" translatable="false">glass</string>
+
+    <!-- The Home layout: classic (this launcher's grid), aurora (drifting colour light behind a glass dock), cinema
+         (the focused app's artwork as a full-screen backdrop, a ribbon of tiles) or orbit (a 3D carousel over a
+         star field). Launcher settings > Home style changes it on the TV and wins over this value. -->
+    <string name="home_style" translatable="false">aurora</string>
+    <!-- Short synthesised sounds for moves, edges and opening apps in the aurora, cinema and orbit styles.
+         Launcher settings > UI sounds changes it on the TV. -->
+    <bool name="ui_sounds">true</bool>
 </resources>

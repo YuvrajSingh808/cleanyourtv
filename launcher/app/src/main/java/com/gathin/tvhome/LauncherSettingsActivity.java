@@ -27,6 +27,10 @@ public final class LauncherSettingsActivity extends Activity {
     private final TextView[] rowChoices = new TextView[4];
     private static final int[] DOCK_OPACITIES = {100, 70, 50, 30};
     private final TextView[] dockChoices = new TextView[DOCK_OPACITIES.length];
+    private final TextView[] styleChoices = new TextView[StyleHome.STYLES.length];
+    private TextView soundsChoice;
+    private String style;
+    private boolean sounds;
     private TextView wallpaperChoice;
     private TextView animationsChoice;
     private TextView advancedChoice;
@@ -56,6 +60,28 @@ public final class LauncherSettingsActivity extends Activity {
         animations = config.animations;
         advancedEffects = config.animations && config.advancedEffects;
 
+        // Home style: saved here, read by MainActivity when it rebuilds (the change count below moves).
+        style = StyleHome.chosen(this);
+        int[] styleIds = {R.id.styleClassic, R.id.styleAurora, R.id.styleCinema, R.id.styleOrbit};
+        for (int i = 0; i < styleIds.length; i++) {
+            final String value = StyleHome.STYLES[i];
+            styleChoices[i] = findViewById(styleIds[i]);
+            styleChoices[i].setOnClickListener(v -> {
+                if (style.equals(value)) return;
+                style = value;
+                choices.edit().putString(StyleHome.KEY, value).apply();
+                changed();
+                refresh();
+            });
+        }
+        sounds = StyleHome.soundsOn(this);
+        soundsChoice = findViewById(R.id.soundsChoice);
+        soundsChoice.setOnClickListener(v -> {
+            sounds = !sounds;
+            choices.edit().putBoolean(StyleHome.SOUNDS_KEY, sounds).apply();
+            changed();
+            refresh();
+        });
         int[] ids = {R.id.columns4, R.id.columns5, R.id.columns6, R.id.columns7};
         for (int i = 0; i < ids.length; i++) {
             final int value = i + 4;
@@ -151,7 +177,7 @@ public final class LauncherSettingsActivity extends Activity {
                 open(SystemSettings.intent(this, Settings.ACTION_SETTINGS)));
         refresh();
         if (config.launcherSettingsButton) reorderChoice.requestFocus();
-        else columnChoices[Math.max(0, Math.min(columns - 4, 3))].requestFocus();
+        else styleChoices[Math.max(0, java.util.Arrays.asList(StyleHome.STYLES).indexOf(style))].requestFocus();
     }
 
     private void reverseRow(TextView[] views) {
@@ -270,6 +296,13 @@ public final class LauncherSettingsActivity extends Activity {
     }
 
     private void refresh() {
+        for (int i = 0; i < styleChoices.length; i++) {
+            styleChoices[i].setSelected(StyleHome.STYLES[i].equals(style));
+        }
+        soundsChoice.setText(getString(R.string.ui_sounds_state, getString(sounds ? R.string.on : R.string.off)));
+        boolean styled = !StyleHome.CLASSIC.equals(style);
+        soundsChoice.setEnabled(styled);
+        soundsChoice.setAlpha(styled ? 1f : 0.5f);
         for (int i = 0; i < columnChoices.length; i++) {
             columnChoices[i].setSelected(columns == i + 4);
         }

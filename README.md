@@ -1,3 +1,6 @@
+> **This is the Home styles fork** of [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv): three new
+> Home layouts, Aurora, Cinema and Orbit, picked on the TV. See **[FORK.md](FORK.md)** for screenshots and details.
+
 <p align="center">
   <a href="https://cleanyour.tv"><img src="https://raw.githubusercontent.com/Gathin23/cleanyourtv/main/docs/banner.png" alt="CleanYourTV. Your TV, minus the ads. Strip the bloatware from any Android TV or Google TV over Wi-Fi and replace the ad-filled home screen with a clean launcher that looks like an Apple TV. No root, no cable, nothing uninstalled, and a one-line restore." width="800"></a>
 </p>
@@ -595,6 +598,13 @@ and a wallpaper.
   `dock_row`; and **Reorder apps**. The launcher's own page has these rows, top to bottom:
   - **Reorder apps**, only with `launcher_settings_button`: OK picks an app up, the arrows move it, Back
     places it, and Back again finishes.
+  - **Home style**: Classic (the dock and grid below), Aurora (soft light in the focused app's colours behind
+    a glass dock, a 3D tilt and sheen on focus), Cinema (the focused app's artwork as a slowly zooming
+    backdrop over a ribbon of tiles) or Orbit (a 3D carousel with reflections over a star field). The three
+    new styles grow a panel in the app's colour from its tile when it opens. `home_style` sets the default;
+    a pick here stays through Follow theme.
+  - **UI sounds** on or off: short synthesised ticks for moves, edges and opening apps in Aurora, Cinema and
+    Orbit (`ui_sounds`).
   - **Apps per row** 4, 5, 6 or 7; **Rows below dock** 0 to 3, how many rows of tiles stay visible under the
     dock band; **Dock band opacity** 100%, 70%, 50% or 30%. The last two only do anything while the dock is
     its own row (`dock_row`, on by default).

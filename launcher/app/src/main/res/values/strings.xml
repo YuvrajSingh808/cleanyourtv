@@ -149,4 +149,20 @@
     <!-- Cinematic top shelf (cinematic_home): the line under the focused dock app's name; %1$s is when it was
          last opened, e.g. "5 minutes ago" or "yesterday, 9:40 pm". -->
     <string name="last_opened">Last opened %1$s</string>
+
+    <!-- Home styles (Launcher settings > Home style) -->
+    <string name="home_style_label">Home style</string>
+    <string name="home_style_classic">Classic</string>
+    <string name="home_style_aurora">Aurora</string>
+    <string name="home_style_cinema">Cinema</string>
+    <string name="home_style_orbit">Orbit</string>
+    <string name="ui_sounds_state">UI sounds: %1$s</string>
+    <string name="style_opening">OPENING</string>
+    <string name="style_open">▶  Open</string>
+    <string name="style_up_hint">↑  Inputs &amp; settings</string>
+    <string name="style_ok_hint">OK to open</string>
+    <string name="style_ok_to_open">Press OK to open</string>
+    <string name="style_opened_just_now">Opened just now</string>
+    <!-- %1$s is a relative time, e.g. "2 hours ago" -->
+    <string name="style_opened">Opened %1$s</string>
 </resources>
